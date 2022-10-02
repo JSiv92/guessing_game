@@ -1,44 +1,35 @@
-//import standard I/O lib
-use std::io;
-//import random
 use rand::Rng;
-//ordering
 use std::cmp::Ordering;
+use std::io;
 
 fn main() {
-    println!("Guess the number");
-    
-    //4. Random number
+    println!("Guess the number!");
+
     let secret_number = rand::thread_rng().gen_range(1..=100);
 
-    //display random number for testing - delete after
-    println!("The secret number is: {secret_number}");
+    loop {
+        println!("Please input your guess.");
 
-    //1.take guess input
-    println!("Please input your guess:");
+        let mut guess = String::new();
 
-    //2.an empty mutable variable of string type
-    let mut guess = String::new();
+        io::stdin()
+            .read_line(&mut guess)
+            .expect("Failed to read line");
 
-    /*
-    3. call readline on the 'guess' variable which is:
-        mutable => mut 
-        an instantiated variable => &
-    */
-    io::stdin()
-        .read_line(&mut guess)
-        .expect("Failed to read line");
+        let guess: u32 = match guess.trim().parse() {
+            Ok(num) => num,
+            Err(_) => continue,
+        };
 
-    //5. Convert guess to int with validation
-    let guess: u32 = guess.trim().parse().expect("Please type a number!");
+        println!("You guessed: {guess}");
 
-    println!("You guessed: {guess}");
-
-    //5. Comparing guesses using match keyword
-    match guess.cmp(&secret_number) {
-        Ordering::Less => println!("Too low"),
-        Ordering::Greater => println!("Too high"),
-        Ordering::Equal => println!("Winner"),
+        match guess.cmp(&secret_number) {
+            Ordering::Less => println!("Too small!"),
+            Ordering::Greater => println!("Too big!"),
+            Ordering::Equal => {
+                println!("You win!");
+                break;
+            }
+        }
     }
-
 }
